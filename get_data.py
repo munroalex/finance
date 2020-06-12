@@ -5,6 +5,7 @@ import datetime as dt
 from pandas_datareader import data as pdr
 import matplotlib.pyplot as plt
 
+# change for commit
 # yahoo finance workaround
 yf.pdr_override()
 
