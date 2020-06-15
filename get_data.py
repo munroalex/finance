@@ -16,13 +16,14 @@ start = dt.datetime(year, month, day)
 now = dt.datetime.now()
 
 
-ticker = input("Enter Ticker: ")
+# ticker = input("Enter Ticker: ")
 csv_df = pd.read_csv("sp500_joined_closes.csv")
-df = pdr.get_data_yahoo(ticker, start, now)
+print(csv_df.head)
+df = csv_df[["Date", "MMM"]].copy()
 
-df["26EMA"] = df.iloc[:, 4].ewm(span=26, adjust=False).mean()
+df["26EMA"] = df.iloc[:, 1].ewm(span=26, adjust=False).mean()
 
-df["12EMA"] = df.iloc[:, 4].ewm(span=12, adjust=False).mean()
+df["12EMA"] = df.iloc[:, 1].ewm(span=12, adjust=False).mean()
 
 df["MACD"] = df["12EMA"] - df["26EMA"]
 print(df.head)
@@ -30,7 +31,7 @@ print(df.head)
 
 plt.figure(figsize=[15, 10])
 plt.grid(True)
-plt.plot(df["Adj Close"], label="Price")
+plt.plot(df["MMM"], label="Price")
 plt.plot(df["MACD"], label="MACD")
 
 plt.legend(loc=2)
