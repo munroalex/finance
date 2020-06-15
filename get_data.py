@@ -17,7 +17,7 @@ now = dt.datetime.now()
 
 
 ticker = input("Enter Ticker: ")
-
+csv_df = pd.read_csv("sp500_joined_closes.csv")
 df = pdr.get_data_yahoo(ticker, start, now)
 
 df["26EMA"] = df.iloc[:, 4].ewm(span=26, adjust=False).mean()

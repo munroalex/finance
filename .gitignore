@@ -1,0 +1,4 @@
+.vscode
+stock_dfs/
+virtualenv
+sp500_joined_closes.csv
