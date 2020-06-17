@@ -116,6 +116,10 @@ if number_of_gains > 0 or number_of_losses > 0:
 else:
     battingAvg = 0
 weekly_returns = 
+
+#ADD PERCENTAGE TAKE PROFIT AND STOP LOSS
+
+
 print()
 print(
     "Results for "
