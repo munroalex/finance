@@ -44,34 +44,57 @@ position = 0
 number = 0
 percent_change = []
 buy = 0
+macd_stop = 0
+take_profit = 0
+stop_loss = 0
+
 for i in df.index:
     close = df["Adj Close"][i]
     mcd = df["MACD"][i]
     rsi = df["RSI"][i]
-    if mcd < 0:
-        if rsi < 30:
+    if position == 0:
+        if mcd < 0 and rsi < 30:
             buy = close
             position = 1
             print("Buying at " + str(buy))
-
-    elif mcd > 0:
-        if position == 1:
+    if position == 1:
+        if mcd > 0:
             sell = close
             position = 0
             print("Selling at " + str(sell))
             change = ((sell / buy) - 1) * 100
             percent_change.append(change)
-    if number == df["Adj Close"].count() - 1 and position == 1:
-        position = 0
-        sell = close
-        print("Selling at " + str(sell))
-        change = ((sell / buy) - 1) * 100
-        percent_change.append(change)
+            macd_stop += 1
+        if close > (buy * 1.1):
+            sell = close
+            position = 0
+            print("Selling at " + str(sell) + " take profit.)
+            change = ((sell / buy) - 1) * 100
+            percent_change.append(change)  
+            take_profit += 1
+        if close < (buy * 0.95):
+            sell = close
+            position = 0
+            print("Selling at " + str(sell) + " stop loss.)
+            change = ((sell / buy) - 1) * 100
+            percent_change.append(change)
+            stop_loss += 1
+        if number == df["Adj Close"].count() - 1:
+            position = 0
+            sell = close
+            print("Selling at " + str(sell))
+            change = ((sell / buy) - 1) * 100
+            percent_change.append(change)
     number += 1
 
 print(percent_change)
 print(sum(percent_change))
-
+print("MACD Above 0 sells: " + str(macd_stop))             
+print("Take profit sells: " + str(take_profit))
+print("Stop loss sells: " + str(stop_loss))
+               
+                  
+                  
 gains = 0
 number_of_gains = 0
 losses = 0
@@ -115,9 +138,9 @@ if number_of_gains > 0 or number_of_losses > 0:
     battingAvg = number_of_gains / (number_of_gains + number_of_losses)
 else:
     battingAvg = 0
-weekly_returns = 
 
-#ADD PERCENTAGE TAKE PROFIT AND STOP LOSS
+
+
 
 
 print()
@@ -130,8 +153,16 @@ print(
     + str(number_of_gains + number_of_losses)
     + " trades"
 )
-print("Number of days: " + str(df["Adj Close"].count()))
-print("Weekly returns: " + (str(df["Adj Close"].count()))
+                  
+number_of_days = (df["Adj Close"].count())  
+daily_returns = total_returns / number_of_days
+weekly_returns = daily_returns * 5
+yearly_returns = weekly returns * 52                  
+
+print("Number of days: " + str(number_of_days))
+print("Daily returns: " + str(daily_returns))
+print("Weekly returns: " + str(weekly_returns))
+print("Yearly returns: " + str(yearly_returns))
 print("Batting Avg: " + str(battingAvg))
 print("Gain/loss ratio: " + ratio)
 print("Average Gain: " + str(avgGain))
@@ -145,7 +176,7 @@ print(
     + str(total_returns)
     + "%"
 )
-# print("Example return Simulating "+str(n)+ " trades: "+ str(nReturn)+"%" )
+
 print()
 """ plt.figure(figsize=[15, 10])
 plt.grid(True)
