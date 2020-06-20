@@ -37,6 +37,7 @@ df = pd.read_csv("stock_dfs/" + str(stock) + ".csv")
 df["200EMA"] = df.iloc[:, 6].ewm(span=200, adjust=False).mean()
 df["26EMA"] = df.iloc[:, 6].ewm(span=26, adjust=False).mean()
 df["12EMA"] = df.iloc[:, 6].ewm(span=12, adjust=False).mean()
+df["SIGNAL"] = df.iloc[:, 6].ewm(span=9, adjust=False).mean()
 df["MACD"] = df["12EMA"] - df["26EMA"]
 df["RSI"] = rsiFunc(df.iloc[:, 6])
 
@@ -52,13 +53,14 @@ for i in df.index:
     close = df["Adj Close"][i]
     mcd = df["MACD"][i]
     rsi = df["RSI"][i]
+    sig = df["SIGNAL"][i]
     if position == 0:
-        if mcd < 0 and rsi < 30:
+        if mcd < 0 and (df["RSI"][i-1] < 30 or df["RSI"][i-2] < 30 or df["RSI"][i-3] < 30 or df["RSI"][i-4] < 30 or df["RSI"][i-4] < 30) and (df["MACD"][i-1] < df["SIGNAL"][i-1]) and (mcd > sig):
             buy = close
             position = 1
             print("Buying at " + str(buy))
     if position == 1:
-        if mcd > 0:
+        if mcd > 0 and (df["MACD"][i-1] > df["SIGNAL"][i-1]) and (mcd < sig):
             sell = close
             position = 0
             print("Selling at " + str(sell))
