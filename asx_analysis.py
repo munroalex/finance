@@ -129,6 +129,7 @@ def add_indicators():
             df["RSI"] = rsi_Func(df.iloc[:, 6])
             df["DV"] = df["Volume"] * df["Close"]
             df["DV15"] = df["DV"].ewm(span=15, adjust=False).mean()
+            df["PCT_CHANGE"] = df["Adj Close"].pct_change() 
             df.to_csv("{}".format(ticker))
         except:
             pass
